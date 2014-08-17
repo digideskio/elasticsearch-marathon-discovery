@@ -5,10 +5,10 @@ import org.elasticsearch.common.component.AbstractLifecycleComponent;
 import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.settings.Settings;
 
-public class ElasticsearchEtcdDiscoveryService extends AbstractLifecycleComponent<ElasticsearchEtcdDiscoveryService> {
+public class EtcdDiscoveryService extends AbstractLifecycleComponent<EtcdDiscoveryService> {
 
     @Inject
-    public ElasticsearchEtcdDiscoveryService(final Settings settings) {
+    public EtcdDiscoveryService(final Settings settings) {
         super(settings);
         logger.info("CREATE ElasticsearchEtcdDiscoveryService");
 
