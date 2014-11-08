@@ -17,7 +17,7 @@ import java.lang.annotation.RetentionPolicy;
 /**
  * @author ferhat
  */
-public abstract class MarathonAbstractTest extends ElasticsearchIntegrationTest {
+public abstract class AbstractMarathonTest extends ElasticsearchIntegrationTest {
 
     @Documented
     @Inherited
@@ -41,8 +41,10 @@ public abstract class MarathonAbstractTest extends ElasticsearchIntegrationTest 
             if (Strings.hasText(System.getProperty("tests.config"))) {
                 settings.loadFromUrl(environment.resolveConfig(System.getProperty("tests.config")));
             } else {
+                fail();
             }
         } catch (FailedToResolveConfigException exception) {
+            fail();
         }
         return settings.build();
     }
