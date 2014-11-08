@@ -8,3 +8,4 @@ Required paramaters;
 * marathon.enabled: true
 * discovery.type: "marathon"
 * marathon.host: "localhost:8080"
+* discovery.zen.ping.multicast.enabled: false
