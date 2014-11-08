@@ -1,4 +1,4 @@
-package com.searchly.discovery.etcd;
+package com.searchly.discovery.marathon;
 
 import com.carrotsearch.randomizedtesting.annotations.TestGroup;
 import org.elasticsearch.common.Strings;
@@ -17,16 +17,16 @@ import java.lang.annotation.RetentionPolicy;
 /**
  * @author ferhat
  */
-public abstract class EtcdAbstractTest extends ElasticsearchIntegrationTest {
+public abstract class MarathonAbstractTest extends ElasticsearchIntegrationTest {
 
     @Documented
     @Inherited
     @Retention(RetentionPolicy.RUNTIME)
-    @TestGroup(enabled = false, sysProperty = SYSPROP_ETCD)
-    public @interface EtcdTest {
+    @TestGroup(enabled = false, sysProperty = SYSPROP_MARATHON)
+    public @interface MarathonTest {
     }
 
-    public static final String SYSPROP_ETCD = "tests.etcd";
+    public static final String SYSPROP_MARATHON = "tests.marathon";
 
     @Override
     protected Settings nodeSettings(int nodeOrdinal) {

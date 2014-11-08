@@ -1,4 +1,4 @@
-package com.searchly.discovery.etcd;
+package com.searchly.discovery.marathon;
 
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.plugins.PluginsService;
@@ -10,16 +10,16 @@ import static org.elasticsearch.common.settings.ImmutableSettings.settingsBuilde
 /**
  * @author ferhat
  */
-@EtcdAbstractTest.EtcdTest
+@MarathonAbstractTest.MarathonTest
 @ElasticsearchIntegrationTest.ClusterScope(scope = ElasticsearchIntegrationTest.Scope.TEST, numDataNodes = 0, numClientNodes = 0, transportClientRatio = 0.0)
-public class EtcdDiscoveryTest extends EtcdAbstractTest {
+public class MarathonDiscoveryTest extends MarathonAbstractTest {
 
     @Test
     public void testStart() {
         Settings nodeSettings = settingsBuilder()
                 .put("plugins." + PluginsService.LOAD_PLUGIN_FROM_CLASSPATH, true)
-                .put("etcd.enabled", true)
-                .put("discovery.type", "etcd")
+                .put("marathon.enabled", true)
+                .put("discovery.type", "marathon")
                 .build();
         internalCluster().startNode(nodeSettings);
     }
