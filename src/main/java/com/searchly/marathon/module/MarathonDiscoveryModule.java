@@ -1,4 +1,4 @@
-package org.elasticsearch.discovery.marathon;
+package com.searchly.marathon.module;
 
 import com.searchly.marathon.discovery.MarathonDiscovery;
 import org.elasticsearch.discovery.Discovery;
