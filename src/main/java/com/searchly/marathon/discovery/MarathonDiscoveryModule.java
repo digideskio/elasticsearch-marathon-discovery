@@ -1,6 +1,5 @@
 package com.searchly.marathon.discovery;
 
-import com.searchly.marathon.discovery.MarathonDiscovery;
 import org.elasticsearch.discovery.Discovery;
 import org.elasticsearch.discovery.zen.ZenDiscoveryModule;
 

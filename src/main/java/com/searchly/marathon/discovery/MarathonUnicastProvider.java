@@ -8,6 +8,7 @@ import org.elasticsearch.Version;
 import org.elasticsearch.cluster.node.DiscoveryNode;
 import org.elasticsearch.common.collect.Lists;
 import org.elasticsearch.common.component.AbstractComponent;
+import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.discovery.zen.ping.unicast.UnicastHostsProvider;
@@ -21,6 +22,7 @@ public class MarathonUnicastProvider extends AbstractComponent implements Unicas
 
     private Marathon marathon;
 
+    @Inject
     public MarathonUnicastProvider(Settings settings) {
         super(settings);
         marathon = MarathonClient.getInstance(settings.get("marathon.host"));
@@ -34,11 +36,9 @@ public class MarathonUnicastProvider extends AbstractComponent implements Unicas
         GetAppResponse appGet = marathon.getApp(clusterName);
 
         for (Task task : appGet.getApp().getTasks()) {
-            Integer[] ports = new Integer[1];
-            task.getPorts().toArray(ports);
-            discoNodes.add(new DiscoveryNode(task.getId(), new InetSocketTransportAddress(task.getHost(), ports[1]), Version.CURRENT));
+            discoNodes.add(new DiscoveryNode(task.getId(), new InetSocketTransportAddress(task.getHost(),
+                    ((List<Integer>) task.getPorts()).get(1)), Version.CURRENT));
         }
-
         return discoNodes;
     }
 }

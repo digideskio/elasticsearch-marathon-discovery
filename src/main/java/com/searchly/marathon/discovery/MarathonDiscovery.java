@@ -1,6 +1,5 @@
 package com.searchly.marathon.discovery;
 
-import org.elasticsearch.Version;
 import org.elasticsearch.cluster.ClusterName;
 import org.elasticsearch.cluster.ClusterService;
 import org.elasticsearch.cluster.node.DiscoveryNodeService;
@@ -26,22 +25,25 @@ public class MarathonDiscovery extends ZenDiscovery {
     public MarathonDiscovery(Settings settings, ClusterName clusterName, ThreadPool threadPool, TransportService transportService, ClusterService clusterService,
                              NodeSettingsService nodeSettingsService, DiscoveryNodeService discoveryNodeService,
                              ZenPingService pingService, DiscoverySettings discoverySettings, ElectMasterService electMasterService) {
-        super(settings, clusterName, threadPool, transportService, clusterService, nodeSettingsService, discoveryNodeService, pingService, electMasterService, discoverySettings);
+        super(settings, clusterName, threadPool, transportService, clusterService, nodeSettingsService,
+                discoveryNodeService, pingService, electMasterService, discoverySettings);
+        if (settings.getAsBoolean("marathon.enabled", true)) {
+            ImmutableList<? extends ZenPing> zenPings = pingService.zenPings();
+            UnicastZenPing unicastZenPing = null;
+            for (ZenPing zenPing : zenPings) {
+                if (zenPing instanceof UnicastZenPing) {
+                    unicastZenPing = (UnicastZenPing) zenPing;
+                    break;
+                }
+            }
 
-        ImmutableList<? extends ZenPing> zenPings = pingService.zenPings();
-        UnicastZenPing unicastZenPing = null;
-        for (ZenPing zenPing : zenPings) {
-            if (zenPing instanceof UnicastZenPing) {
-                unicastZenPing = (UnicastZenPing) zenPing;
-                break;
+            if (unicastZenPing != null) {
+                unicastZenPing.addHostsProvider(new MarathonUnicastProvider(settings));
+                pingService.zenPings(ImmutableList.of(unicastZenPing));
+            } else {
+                logger.warn("failed to apply marathon unicast discovery, no unicast ping found");
             }
         }
 
-        if (unicastZenPing != null) {
-            unicastZenPing.addHostsProvider(new MarathonUnicastProvider(settings));
-            pingService.zenPings(ImmutableList.of(unicastZenPing));
-        } else {
-            logger.warn("failed to apply marathon unicast discovery, no unicast ping found");
-        }
     }
 }
