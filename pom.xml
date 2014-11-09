@@ -29,7 +29,7 @@
     </properties>
     <scm>
         <connection>scm:git:https://github.com/searchly/elasticsearch-marathon-discovery.git</connection>
-        <developerConnection>scm:git:git://github.com/searchly/elasticsearch-marathon-discovery.git</developerConnection>
+        <developerConnection>scm:git:https://github.com/searchly/elasticsearch-marathon-discovery.git</developerConnection>
         <url>https://github.com/searchly/elasticsearch-marathon-discovery</url>
         <tag>HEAD</tag>
     </scm>
