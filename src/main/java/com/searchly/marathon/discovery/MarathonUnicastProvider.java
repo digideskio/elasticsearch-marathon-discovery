@@ -25,7 +25,8 @@ public class MarathonUnicastProvider extends AbstractComponent implements Unicas
     @Inject
     public MarathonUnicastProvider(Settings settings) {
         super(settings);
-        marathon = MarathonClient.getInstance(settings.get("marathon.host"));
+        String marathonConnectionUrl = "http://" + settings.get("marathon.host") + ":" + settings.get("marathon.port");
+        marathon = MarathonClient.getInstance(marathonConnectionUrl);
     }
 
     @Override
