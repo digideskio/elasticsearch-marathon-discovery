@@ -25,7 +25,15 @@
         <tests.client.ratio></tests.client.ratio>
         <tests.jvm.argline></tests.jvm.argline>
         <es.logger.level>INFO</es.logger.level>
+        <maven-release.version>2.5.1</maven-release.version>
     </properties>
+    <scm>
+        <connection>scm:git:https://github.com/searchly/elasticsearch-marathon-discovery.git/</connection>
+        <developerConnection>scm:git:git://github.com/searchly/elasticsearch-marathon-discovery.git/</developerConnection>
+        <url>https://github.com/searchly/elasticsearch-marathon-discovery</url>
+        <tag>HEAD</tag>
+    </scm>
+
     <dependencies>
         <dependency>
             <groupId>org.elasticsearch</groupId>
@@ -235,6 +243,11 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>${maven-release.version}</version>
             </plugin>
         </plugins>
     </build>
