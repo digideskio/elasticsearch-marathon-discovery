@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <name>elasticsearch-marathon-discovery</name>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.searchly</groupId>
     <artifactId>elasticsearch-marathon-discovery</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <description>elasticsearch elasticsearch-marathon-discovery plugin</description>
     <inceptionYear>2014</inceptionYear>
@@ -21,8 +22,8 @@
         <tests.output>onerror</tests.output>
         <tests.shuffle>true</tests.shuffle>
         <tests.output>onerror</tests.output>
-        <tests.client.ratio />
-        <tests.jvm.argline />
+        <tests.client.ratio></tests.client.ratio>
+        <tests.jvm.argline></tests.jvm.argline>
         <es.logger.level>INFO</es.logger.level>
         <maven-release.version>2.5.1</maven-release.version>
     </properties>
@@ -30,7 +31,7 @@
         <connection>scm:git:https://github.com/searchly/elasticsearch-marathon-discovery.git/</connection>
         <developerConnection>scm:git:git://github.com/searchly/elasticsearch-marathon-discovery.git/</developerConnection>
         <url>https://github.com/searchly/elasticsearch-marathon-discovery</url>
-        <tag>elasticsearch-marathon-discovery-0.0.1</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <dependencies>
@@ -115,17 +116,27 @@
                             <jvmOutputAction>pipe,warn</jvmOutputAction>
                             <leaveTemporary>true</leaveTemporary>
                             <listeners>
-                                <report-ant-xml mavenExtensions="true" dir="${project.build.directory}/surefire-reports" />
-                                <report-text showThrowable="true" showStackTraces="true" showOutput="${tests.output}" showStatusOk="false" showStatusError="true" showStatusFailure="true" showStatusIgnored="true" showSuiteSummary="true" timestamps="false" />
-                                <report-execution-times file="${basedir}/.local-execution-hints.log" />
+                                <report-ant-xml mavenExtensions="true"
+                                                dir="${project.build.directory}/surefire-reports"/>
+                                <report-text
+                                        showThrowable="true"
+                                        showStackTraces="true"
+                                        showOutput="${tests.output}"
+                                        showStatusOk="false"
+                                        showStatusError="true"
+                                        showStatusFailure="true"
+                                        showStatusIgnored="true"
+                                        showSuiteSummary="true"
+                                        timestamps="false"/>
+                                <report-execution-times file="${basedir}/.local-execution-hints.log"/>
                             </listeners>
                             <assertions>
-                                <enable />
+                                <enable/>
                             </assertions>
                             <parallelism>1</parallelism>
                             <balancers>
                                 <execution-times>
-                                    <fileset dir="${basedir}" includes=".local-execution-hints.log" />
+                                    <fileset dir="${basedir}" includes=".local-execution-hints.log"/>
                                 </execution-times>
                             </balancers>
                             <includes>
