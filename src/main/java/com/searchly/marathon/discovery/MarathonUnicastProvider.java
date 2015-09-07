@@ -4,6 +4,7 @@ import mesosphere.marathon.client.Marathon;
 import mesosphere.marathon.client.MarathonClient;
 import mesosphere.marathon.client.model.v2.GetAppResponse;
 import mesosphere.marathon.client.model.v2.Task;
+import mesosphere.marathon.client.utils.MarathonException;
 import org.elasticsearch.Version;
 import org.elasticsearch.cluster.node.DiscoveryNode;
 import org.elasticsearch.common.collect.Lists;
@@ -25,7 +26,7 @@ public class MarathonUnicastProvider extends AbstractComponent implements Unicas
     @Inject
     public MarathonUnicastProvider(Settings settings) {
         super(settings);
-        String marathonConnectionUrl = "http://" + settings.get("marathon.host") + ":" + settings.get("marathon.port");
+        String marathonConnectionUrl = settings.get("marathon.host");
         marathon = MarathonClient.getInstance(marathonConnectionUrl);
     }
 
@@ -34,11 +35,16 @@ public class MarathonUnicastProvider extends AbstractComponent implements Unicas
         List<DiscoveryNode> discoNodes = Lists.newArrayList();
 
         String clusterName = settings.get("cluster.name");
-        GetAppResponse appGet = marathon.getApp(clusterName);
-
-        for (Task task : appGet.getApp().getTasks()) {
-            discoNodes.add(new DiscoveryNode(task.getId(), new InetSocketTransportAddress(task.getHost(),
-                    ((List<Integer>) task.getPorts()).get(1)), Version.CURRENT));
+        Integer portOrder = Integer.parseInt(settings.get("marathon.port_index", "1"));
+        GetAppResponse appGet;
+        try {
+            appGet = marathon.getApp(clusterName);
+            for (Task task : appGet.getApp().getTasks()) {
+                discoNodes.add(new DiscoveryNode(task.getId(), new InetSocketTransportAddress(task.getHost(),
+                        ((List<Integer>) task.getPorts()).get(portOrder)), Version.CURRENT));
+            }
+        } catch (MarathonException e) {
+            logger.error("Can not find marathon application via id {}", e, clusterName);
         }
         return discoNodes;
     }

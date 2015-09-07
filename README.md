@@ -5,10 +5,12 @@ Marathon API Based Unicast Disovery
 
 Required paramaters;
 
-* marathon.enabled: true
 * discovery.type: com.searchly.marathon.module.MarathonDiscoveryModule
-* marathon.host: localhost
-* marathon.port: 8080
+* marathon
+    enabled: true
+    host: http://localhost:8080 # marathon master
+    port_index: 2 # this property is the index value of ports defined while creating marathon container/docker
+
 * discovery.zen.ping.multicast.enabled: false
 
 
