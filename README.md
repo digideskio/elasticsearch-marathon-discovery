@@ -14,6 +14,6 @@ Required paramaters;
 * discovery.zen.ping.multicast.enabled: false
 
 
-* bin/plugin -url https://github.com/searchly/elasticsearch-marathon-discovery/releases/download/elasticsearch-marathon-discovery-0.0.2/elasticsearch-marathon-discovery-0.0.2.zip install marathon
+* bin/plugin -url https://github.com/searchly/elasticsearch-marathon-discovery/releases/download/elasticsearch-marathon-discovery-0.0.4/elasticsearch-marathon-discovery-0.0.4.zip install marathon
 
 
