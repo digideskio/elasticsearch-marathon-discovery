@@ -7,7 +7,6 @@
     <version>0.0.5-SNAPSHOT</version>
     <packaging>jar</packaging>
     <description>elasticsearch elasticsearch-marathon-discovery plugin</description>
-    <inceptionYear>2014</inceptionYear>
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
@@ -16,7 +15,7 @@
         </license>
     </licenses>
     <properties>
-        <elasticsearch.version>1.7.1</elasticsearch.version>
+        <elasticsearch.version>1.7.5</elasticsearch.version>
         <lucene.version>4.10.4</lucene.version>
         <tests.output>onerror</tests.output>
         <tests.shuffle>true</tests.shuffle>
