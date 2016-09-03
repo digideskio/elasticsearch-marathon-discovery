@@ -1,51 +1,87 @@
 package com.searchly.marathon.discovery;
 
-import mesosphere.marathon.client.Marathon;
-import mesosphere.marathon.client.MarathonClient;
-import mesosphere.marathon.client.model.v2.GetAppResponse;
-import mesosphere.marathon.client.model.v2.Task;
-import mesosphere.marathon.client.utils.MarathonException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+import org.elasticsearch.SpecialPermission;
 import org.elasticsearch.Version;
 import org.elasticsearch.cluster.node.DiscoveryNode;
-import org.elasticsearch.common.collect.Lists;
 import org.elasticsearch.common.component.AbstractComponent;
 import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.discovery.zen.ping.unicast.UnicastHostsProvider;
 
-import java.util.List;
+import java.net.InetSocketAddress;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author ferhat
  */
 public class MarathonUnicastProvider extends AbstractComponent implements UnicastHostsProvider {
 
-    private Marathon marathon;
+    private CloseableHttpClient httpclient;
 
     @Inject
     public MarathonUnicastProvider(Settings settings) {
         super(settings);
-        String marathonConnectionUrl = settings.get("marathon.host");
-        marathon = MarathonClient.getInstance(marathonConnectionUrl);
+
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null) {
+            sm.checkPermission(new SpecialPermission());
+        }
+
+        httpclient = HttpClients.createDefault();
     }
 
     @Override
     public List<DiscoveryNode> buildDynamicNodes() {
-        List<DiscoveryNode> discoNodes = Lists.newArrayList();
+        return getNodesFromMarathonAPI();
+    }
 
-        String clusterName = settings.get("cluster.name");
-        Integer portOrder = Integer.parseInt(settings.get("marathon.port_index", "1"));
-        GetAppResponse appGet;
-        try {
-            appGet = marathon.getApp(clusterName);
-            for (Task task : appGet.getApp().getTasks()) {
-                discoNodes.add(new DiscoveryNode(task.getId(), new InetSocketTransportAddress(task.getHost(),
-                        ((List<Integer>) task.getPorts()).get(portOrder)), Version.CURRENT));
-            }
-        } catch (MarathonException e) {
-            logger.error("Can not find marathon application via id {}", e, clusterName);
-        }
+    private List<DiscoveryNode> getNodesFromMarathonAPI() {
+
+        String marathonConnectionUrl = settings.get("marathon.host", "http://marathon.mesos:8080");
+
+        List<DiscoveryNode> discoNodes = new ArrayList<>();
+
+        AccessController.doPrivileged(
+                (PrivilegedAction<Boolean>) () -> {
+                    try {
+                        // set port index to be used
+                        Integer portOrder = Integer.parseInt(settings.get("marathon.port_index", "1"));
+
+                        // get app details from marathon
+                        HttpGet httpget = new HttpGet(marathonConnectionUrl + "/v2/apps/" + settings.get("cluster.name"));
+                        String response = EntityUtils.toString(httpclient.execute(httpget).getEntity());
+
+                        // parse json
+                        ObjectMapper mapper = new ObjectMapper();
+                        TypeReference<HashMap<String, Object>> typeRef
+                                = new TypeReference<HashMap<String, Object>>() {
+                        };
+                        HashMap<String, Object> marathonResponse = mapper.readValue(response, typeRef);
+                        HashMap app = (HashMap) marathonResponse.get("app");
+                        List<Map<String,Object>> tasks = (List<Map<String,Object>>) app.get("tasks");
+
+                        // create nodes to connect except self
+                        discoNodes.addAll(tasks.stream().filter(task -> !settings.get("node.name").equals(task.get("id").toString())).map(task ->
+                                new DiscoveryNode(task.get("id").toString(), new InetSocketTransportAddress
+                                (new InetSocketAddress(task.get("host").toString(), ((List<Integer>)
+                                        task.get("ports")).get(portOrder))), Version.CURRENT)).collect(Collectors.toList()));
+                    } catch (Exception e) {
+                        logger.error("Marathon discovery failure {}", e);
+                        return Boolean.FALSE;
+                    }
+                    return Boolean.TRUE;
+                }
+        );
         return discoNodes;
     }
 }

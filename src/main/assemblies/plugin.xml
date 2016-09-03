@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <assembly>
-	<id></id>
+	<id>marathon-discovery</id>
 	<formats>
 		<format>zip</format>
 	</formats>
@@ -15,4 +15,16 @@
 			</excludes>
 		</dependencySet>
 	</dependencySets>
+	<files>
+		<file>
+			<source>${basedir}/src/main/resources/plugin-descriptor.properties</source>
+			<outputDirectory>/</outputDirectory>
+			<filtered>true</filtered>
+		</file>
+		<file>
+			<source>${basedir}/src/main/plugin-metadata/plugin-security.policy</source>
+			<outputDirectory>/</outputDirectory>
+			<filtered>true</filtered>
+		</file>
+	</files>
 </assembly>
