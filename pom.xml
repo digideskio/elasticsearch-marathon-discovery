@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.searchly</groupId>
     <artifactId>elasticsearch-marathon-discovery</artifactId>
-    <version>0.0.7-SNAPSHOT</version>
+    <version>0.0.7</version>
     <packaging>jar</packaging>
     <description>elasticsearch elasticsearch-marathon-discovery plugin</description>
     <licenses>
@@ -24,7 +24,7 @@
         <developerConnection>scm:git:https://github.com/searchly/elasticsearch-marathon-discovery.git
         </developerConnection>
         <url>https://github.com/searchly/elasticsearch-marathon-discovery</url>
-        <tag>HEAD</tag>
+        <tag>elasticsearch-marathon-discovery-0.0.7</tag>
     </scm>
 
     <dependencies>
