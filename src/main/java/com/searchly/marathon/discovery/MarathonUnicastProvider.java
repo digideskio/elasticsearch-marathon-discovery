@@ -58,7 +58,7 @@ public class MarathonUnicastProvider extends AbstractComponent implements Unicas
                         Integer portOrder = Integer.parseInt(settings.get("marathon.port_index", "1"));
 
                         // get app details from marathon
-                        HttpGet httpget = new HttpGet(marathonConnectionUrl + "/v2/apps/" + settings.get("cluster.name"));
+                        HttpGet httpget = new HttpGet(marathonConnectionUrl + "/v2/apps/" + settings.get("marathon.task"));
                         String response = EntityUtils.toString(httpclient.execute(httpget).getEntity());
 
                         // parse json
