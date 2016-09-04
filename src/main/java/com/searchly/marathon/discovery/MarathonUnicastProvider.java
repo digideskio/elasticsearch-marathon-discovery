@@ -58,16 +58,22 @@ public class MarathonUnicastProvider extends AbstractComponent implements Unicas
                         Integer portOrder = Integer.parseInt(settings.get("marathon.port_index", "1"));
 
                         // get app details from marathon
-                        HttpGet httpget = new HttpGet(marathonConnectionUrl + "/v2/apps/" + settings.get("marathon.task"));
+                        String connectionUrl = marathonConnectionUrl + "/v2/apps/" + settings.get("marathon.task");
+
+                        logger.info("Getting task details with url {}", connectionUrl);
+
+                        HttpGet httpget = new HttpGet(connectionUrl);
                         String response = EntityUtils.toString(httpclient.execute(httpget).getEntity());
+
+                        logger.info("Got response from marathon master '{}...'", response.substring(0, 30));
 
                         // parse json
                         ObjectMapper mapper = new ObjectMapper();
                         TypeReference<HashMap<String, Object>> typeRef
                                 = new TypeReference<HashMap<String, Object>>() {
                         };
-                        HashMap<String, Object> marathonResponse = mapper.readValue(response, typeRef);
-                        HashMap app = (HashMap) marathonResponse.get("app");
+                        Map<String, Object> marathonResponse = mapper.readValue(response, typeRef);
+                        Map app = (Map) marathonResponse.get("app");
                         List<Map<String,Object>> tasks = (List<Map<String,Object>>) app.get("tasks");
 
                         // create nodes to connect except self
